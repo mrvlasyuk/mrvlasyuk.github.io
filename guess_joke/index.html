@@ -1,10 +1,4 @@
-<script type="importmap">
-  {
-    "imports": {
-      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
-    }
-  }
-</script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
 <div id="app">
   <div class="joke_number">[ {{ current_joke_ix}} / {{ jokes.length }} ]</div>
@@ -42,10 +36,11 @@
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
+    font-size: 1rem;
     margin: 40px 2px;
     cursor: pointer;
-    width: 30%;
+    width: 50%;
+
     position: fixed;
     bottom: 0;
   }
@@ -137,7 +132,7 @@
     return 0.5 - Math.random();
   });
 
-  import { createApp } from "vue";
+  const { createApp } = Vue
 
   createApp({
     data() {
