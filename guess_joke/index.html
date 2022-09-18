@@ -1,0 +1,200 @@
+<script type="importmap">
+  {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+    }
+  }
+</script>
+
+<div id="app">
+  <div class="joke_number">[ {{ current_joke_ix}} / {{ jokes.length }} ]</div>
+  <div id="task">
+    <div id="start_joke" class="joke">{{ start_joke }}</div>
+    <div id="middle_part">
+      [
+      <div class="answer">{{ shown_middle_part }}</div>
+      ]
+    </div>
+    <div id="end_joke" class="joke">{{ end_joke }}</div>
+  </div>
+  <button @click="next_joke" id="next_btn">{{btn_text}}</button>
+</div>
+
+<style>
+  /* Make #app in the center of the page */
+  #app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    /* Huge and pretty font size for the title  */
+    font-size: 3rem;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  /* Beautiful next_btn */
+  /* Btn is fixed in the bottom of the page */
+  #next_btn {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 40px 2px;
+    cursor: pointer;
+    width: 30%;
+    position: fixed;
+    bottom: 0;
+  }
+  #task {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0px 20px;
+  }
+  #middle_part {
+    display: flex;
+    /* font-weight: bold; */
+    margin: 0px 10px;
+    /* Nice blue color */
+    color: #2196f3;
+  }
+  .answer {
+    margin: 0px 10px;
+    font-weight: bold;
+  }
+  /* Joke numeration is fixed in the top of the page */
+  .joke_number {
+    position: fixed;
+    top: 0;
+    /* right: 0; */
+    margin: 10px;
+  }
+</style>
+
+<script type="module">
+  const JOKES = [
+    "Чем завтракают копрофилы? [Ужином]",
+    "У С++ всего два [плюса]",
+    "Приходит цыган с [работы]",
+    "Жена препода родила [пару]",
+    "Жена слесаря родила [шестерню]",
+    "Азербайджанцы спят на [Баку].",
+    "Спидранер умер во время [родов]",
+    "В семье феминисток горе: [отец]",
+    "Ирландские учёные открыли [паб].",
+    "Немой петух по утрам [вибрирует]",
+    "Часовщик-фетишист дрочит [часами]",
+    "Репер с диареей зачитал [дристайл]",
+    "Музыкант-лудоман [проиграл] мелодию",
+    "Играя в шахматы, дед двинул [коней]",
+    "—Алло, это Стив Джобс? —Да. —[Win]да!",
+    "работник nike не торчок, он just [duet]",
+    "Полюбив деревья, старушка дала [дубу]",
+    "Башкиры размножаются [эчпочмак]ованием",
+    "Видеоблогера-зоофила возбуждают [лайки]",
+    "В городе карликов [низкая] преступность",
+    "Стакан наполовину ста, наполовину [кан]",
+    "Купила лягушка шляпу, а она ей [квак раз]",
+    "Девушка шлет мне анекдот. А я ей шлю [ха]",
+    "Группа умных альпинистов [обошла] Эверест.",
+    "- Mr. Pavliashvili, how are you?\n- [So so]",
+    "Знаете что общего у двух коммунистов? [ВСЁ]",
+    "Штирлиц пернул втихаря. [Тихарь] задохнулся.",
+    "Девушки как макароны. Мокрые уже не [ломаются]",
+    "Еврею педофилу постоянно не хватает [мелочи]",
+    "Греческие боги-инвалиды живут на [Паралимпе]",
+    "Невменяемый бухгалтер не отдаёт себе [отчёт]",
+    "Штирлиц приготовился к бою. Но пришла [герл].",
+    "- Мне, пожалуйста, [пол] арбуза.\n- Это самец.",
+    "- За что люди любят CUMчатку?\n- За GAY[зеры].",
+    "Тренер камикадзе:\n— Смотри, показываю [1 раз]",
+    "На экзамене по вождению девушка сдала [задом].",
+    "В семье [скелетов] родился сын. Назвали Костян",
+    "У утонувшего школьника есть две [синих] ручки.",
+    "— Вам батон [нарезной]?\n— Нет, гладкоствольный",
+    "— Зачем девушки идут в армию?\n— За [нарядами].",
+    "В семье семян случилось горе. Отца [посадили].",
+    "[Одноногий] мальчик встал не с той ноги и упал.",
+    "Жена шизофреника и не подозревает, что её [нет]",
+    "На армянском такси вместо шашечек — [нардочки].",
+    "Следователь извращенец [возбудил] уголовное дело",
+    "На олимпиаде команда алхимиков получила [золото]",
+    "Приходя на кладбище, оптимист видит одни [плюсы]",
+    "У Андрея нету ног. Время идёт, а Андрей - [нет].",
+    "Буратино устал жить, взял дрель и [засверлился].",
+    "Как называются похороны электрика? [Заземление]",
+    "Зачем приучать детей к [горшку], если он умер?",
+    "— Как нужно называть безрукого армянина?\n— [Янин]",
+    "Мальчик: бьёт тату с ее именем. Мужчина: бьёт [её]",
+    "-Поехали ко мне? -А какой предлог? -[ко] -Поехали",
+  ];
+
+  // Make random shuffle of JOKES array. Order of jokes will be same every time.
+  JOKES.sort(function () {
+    return 0.5 - Math.random();
+  });
+
+  import { createApp } from "vue";
+
+  createApp({
+    data() {
+      return {
+        message: "Hello Vue!",
+        jokes: JOKES,
+        current_joke_ix: 0,
+        start_joke: "",
+        middle_part: "",
+        end_joke: "",
+        show_answer: true,
+        btn_text: "Показать ответ",
+      };
+    },
+
+    mounted() {
+      this.next_joke();
+      // Call next_joke when spacebar is pressed
+      document.addEventListener("keydown", (event) => {
+        if (event.code === "Space") {
+          this.next_joke();
+        }
+      });
+    },
+
+    methods: {
+      next_joke() {
+        if (this.show_answer) {
+          this.show_answer = false;
+          this.btn_text = "Показать ответ [пробел]";
+          this.current_joke_ix = (this.current_joke_ix + 1) % this.jokes.length;
+        } else {
+          this.show_answer = true;
+          this.btn_text = "Следующая шутка [пробел]";
+        }
+        this.load_joke();
+      },
+
+      load_joke() {
+        let joke = this.jokes[this.current_joke_ix];
+        // remove all new lines
+        joke = joke.replace(/(\r\n|\n|\r)/gm, "");
+        // Split joke into three parts by [ ]
+        // Example "Hello [world]!" => ["Hello ", "world", "!"]
+        let parts = joke.split(/\[|\]/);
+        this.start_joke = parts[0];
+        this.middle_part = parts[1];
+        this.end_joke = parts[2];
+      },
+    },
+    computed: {
+      shown_middle_part() {
+        if (this.show_answer) {
+          return this.middle_part;
+        }
+        return "???";
+      },
+    },
+  }).mount("#app");
+</script>
