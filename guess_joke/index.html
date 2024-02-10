@@ -26,6 +26,7 @@
     font-size: 3rem;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
+
   /* Beautiful next_btn */
   /* Btn is fixed in the bottom of the page */
   #next_btn {
@@ -44,11 +45,13 @@
     position: fixed;
     bottom: 0;
   }
+
   #task {
     display: flex;
     flex-wrap: wrap;
     margin: 0px 30px;
   }
+
   #middle_part {
     display: flex;
     /* font-weight: bold; */
@@ -56,10 +59,12 @@
     /* Nice blue color */
     color: #2196f3;
   }
+
   .answer {
     margin: 0px 10px;
     font-weight: bold;
   }
+
   /* Joke numeration is fixed in the top of the page */
   .joke_number {
     position: fixed;
@@ -68,21 +73,24 @@
     margin: 10px;
   }
 
-/* Styles for IPhone 12 */
-@media only screen and (max-device-width: 400px) {
-  #app {
-    font-size: 6rem;
-  }
-  #next_btn {
-    height: 8rem;
-    width: 100%;
-    font-size: 3rem;
-  }
-}
+  /* Styles for IPhone 12 */
+  @media only screen and (max-device-width: 400px) {
+    #app {
+      font-size: 6rem;
+    }
 
+    #next_btn {
+      height: 8rem;
+      width: 100%;
+      font-size: 3rem;
+    }
+  }
 </style>
 
 <script type="module">
+
+  import { createApp } from "vue";
+
   const JOKES = [
     "Чем завтракают копрофилы? [Ужином]",
     "У С++ всего два [плюса]",
@@ -140,18 +148,35 @@
     "-Поехали ко мне? -А какой предлог? -[ко] -Поехали",
   ];
 
-  // Make random shuffle of JOKES array. Order of jokes will be same every time.
-  JOKES.sort(function () {
-    return 0.5 - Math.random();
-  });
+  const GOOD_JOKES = [
+    "Жена препода родила [пару]",
+    "Жена слесаря родила [шестерню]",
+    "Азербайджанцы спят на [Баку].",
+    "Ирландские учёные открыли [паб].",
+    "Немой петух по утрам [вибрирует]",
+    "Играя в шахматы, дед двинул [коней]",
+    "В городе карликов [низкая] преступность",
+    "Стакан наполовину ста, наполовину [кан]",
+    "Группа умных альпинистов [обошла] Эверест.",
+    "Греческие боги-инвалиды живут на [Паралимпе]",
+    "- Мне, пожалуйста, [пол] арбуза.\n- Это самец.",
+    "Тренер камикадзе:\n— Смотри, показываю [1 раз]",
+    "У утонувшего школьника есть две [синих] ручки.",
+    "— Вам батон [нарезной]?\n— Нет, гладкоствольный",
+    "В семье семян случилось горе. Отца [посадили].",
+    "Жена шизофреника и не подозревает, что её [нет]",
+    "На олимпиаде команда алхимиков получила [золото]",
+    "Приходя на кладбище, оптимист видит одни [плюсы]",
+    "У Андрея нету ног. Время идёт, а Андрей - [нет].",
+    "Как называются похороны электрика? [Заземление]",
+  ];
 
-  const { createApp } = Vue
 
   createApp({
-    data() {
+    data () {
       return {
         message: "Hello Vue!",
-        jokes: JOKES,
+        jokes: null,
         current_joke_ix: 0,
         start_joke: "",
         middle_part: "",
@@ -161,7 +186,14 @@
       };
     },
 
-    mounted() {
+    mounted () {
+      // if in url is ?good_jokes then use GOOD_JOKES
+      if (window.location.search.includes("good_jokes")) {
+        this.jokes = GOOD_JOKES;
+      } else {
+        this.jokes = JOKES;
+      }
+      this.jokes = this.jokes.sort(() => Math.random() - 0.5);
       this.next_joke();
       // Call next_joke when spacebar is pressed
       document.addEventListener("keydown", (event) => {
@@ -172,7 +204,7 @@
     },
 
     methods: {
-      next_joke() {
+      next_joke () {
         if (this.show_answer) {
           this.show_answer = false;
           this.btn_text = "Показать ответ [пробел]";
@@ -184,7 +216,7 @@
         this.load_joke();
       },
 
-      load_joke() {
+      load_joke () {
         let joke = this.jokes[this.current_joke_ix];
         // remove all new lines
         joke = joke.replace(/(\r\n|\n|\r)/gm, "");
@@ -197,7 +229,7 @@
       },
     },
     computed: {
-      shown_middle_part() {
+      shown_middle_part () {
         if (this.show_answer) {
           return this.middle_part;
         }
